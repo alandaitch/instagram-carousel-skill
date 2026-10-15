@@ -169,6 +169,8 @@ Ejemplo completo: [examples/spec.example.json](examples/spec.example.json).
 python3 <skill_dir>/scripts/publish_carousel.py /tmp/carousel-spec.json
 ```
 
+En Windows, usar `python` en vez de `python3`: ahí `python3` suele ser el atajo de la Microsoft Store y no corre.
+
 El script:
 1. Lee `config.json` (handle, firma, colores, fuente, carpeta de salida).
 2. Reemplaza placeholders e inyecta los colores de marca como variables CSS.

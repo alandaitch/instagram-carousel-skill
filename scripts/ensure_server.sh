@@ -9,7 +9,14 @@ SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG="${CAROUSEL_CONFIG:-$SKILL_DIR/config.json}"
 [ -f "$CONFIG" ] || CONFIG="$SKILL_DIR/config.example.json"
 
-read -r API_URL OC_DIR < <(python3 - "$CONFIG" <<'PY'
+# En Windows `python3` suele ser el atajo de la Microsoft Store, que no corre:
+# se usa el primer intérprete que de verdad ejecuta.
+PY=""
+for c in python3 python py; do "$c" -c '' 2>/dev/null && PY=$c && break; done
+[ -n "$PY" ] || { echo "ERROR: no hay Python que corra (probé python3, python, py)" >&2; exit 1; }
+
+# tr quita el \r que Python escribe en Windows; si no, la ruta acaba en \r y no existe.
+read -r API_URL OC_DIR < <("$PY" - "$CONFIG" <<'PY' | tr -d '\r'
 import json, os, sys
 cfg = json.load(open(sys.argv[1]))
 api = cfg.get("api_url", "http://localhost:3000").rstrip("/")
